@@ -32,7 +32,7 @@ import {
     addActionGroup,
     assertNumber,
     batteryVoltageToPercentage,
-    configureSetBatteryPowerSourceWhenUnknown,
+    configureSetPowerSourceWhenUnknown,
     flatten,
     getEndpointName,
     getFromLookup,
@@ -395,7 +395,7 @@ export function battery(args?: BatteryArgs): ModernExtend {
         if (args.voltageReporting) {
             configure.push(setupConfigureForReporting('genPowerCfg', 'batteryVoltage', args.voltageReportingConfig, ea.STATE_GET));
         }
-        configure.push(configureSetBatteryPowerSourceWhenUnknown);
+        configure.push(configureSetPowerSourceWhenUnknown('Battery'));
         result.configure = configure;
     }
 
@@ -505,6 +505,7 @@ export function onOff(args?: OnOffArgs): ModernExtend {
                     }
                 }
             },
+            configureSetPowerSourceWhenUnknown('Mains (single phase)'),
         ];
     }
     return result;
@@ -1046,6 +1047,7 @@ export function light(args?: LightArgs): ModernExtend {
                 }
             }
         },
+        configureSetPowerSourceWhenUnknown('Mains (single phase)'),
     ];
 
     const result: ModernExtend = {exposes, fromZigbee, toZigbee, configure, meta, isModernExtend: true};

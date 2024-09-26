@@ -1584,7 +1584,11 @@ const definitions: DefinitionWithExtend[] = [
             tuya.whitelabel('Moes', 'ZB-TDA9-RCW-E27-MS', 'RGB+CCT 9W E27 LED bulb', ['_TZ3210_wxa85bwk']),
             tuya.whitelabel('Moes', 'ZB-LZD10-RCW', '10W RGB+CCT Smart Downlight', ['_TZ3210_s9lumfhn', '_TZ3210_jjqdqxfq']),
             tuya.whitelabel('MiBoxer', 'FUT106ZR', 'GU10 bulb', ['_TZB210_rwy5hexp']),
-            tuya.whitelabel('Tuya', 'TS0505B_1_1', 'Zigbee 3.0 18W led light bulb E27 RGBCW', ['_TZ3210_jd3z4yig', '_TZ3210_r5afgmkl']),
+            tuya.whitelabel('Tuya', 'TS0505B_1_1', 'Zigbee 3.0 18W led light bulb E27 RGBCW', [
+                '_TZ3210_jd3z4yig',
+                '_TZ3210_r5afgmkl',
+                '_TZ3210_mja6r5ix',
+            ]),
             tuya.whitelabel('MiBoxer', 'FUTC11ZR', 'Outdoor light', ['_TZB210_zmppwawa']),
         ],
         extend: [tuya.modernExtend.tuyaLight({colorTemp: {range: [153, 500]}, color: true})],
@@ -1599,7 +1603,6 @@ const definitions: DefinitionWithExtend[] = [
         description: 'Zigbee RGB+CCT light',
         whiteLabel: [
             tuya.whitelabel('Lidl', '14149505L/14149506L_2', 'Livarno Lux light bar RGB+CCT (black/white)', ['_TZ3210_iystcadi']),
-            tuya.whitelabel('Tuya', 'TS0505B_2_1', 'Zigbee 3.0 18W led light bulb E27 RGBCW', ['_TZ3210_mja6r5ix']),
             tuya.whitelabel('Tuya', 'TS0505B_2_2', 'Zigbee GU10/E14 5W smart bulb', ['_TZ3210_it1u8ahz']),
         ],
         toZigbee: [tz.on_off, tzLocal.led_control, tuya.tz.do_not_disturb],
@@ -3653,7 +3656,7 @@ const definitions: DefinitionWithExtend[] = [
     {
         fingerprint: [{modelID: 'TS0001', manufacturerName: '_TZ3000_gbshwgag'}],
         model: 'TS0001_switch_module_2',
-        vendor: 'TuYa',
+        vendor: 'Tuya',
         description: '1 gang switch with backlight',
         extend: [tuya.modernExtend.tuyaOnOff({powerOnBehavior2: true, backlightModeOffOn: true, indicatorMode: true})],
         configure: async (device, coordinatorEndpoint) => {
@@ -3934,7 +3937,7 @@ const definitions: DefinitionWithExtend[] = [
             {modelID: 'TS0601', manufacturerName: '_TZE200_1fuxihti'},
             {modelID: 'TS0601', manufacturerName: '_TZE204_1fuxihti'},
             {modelID: 'TS0601', manufacturerName: '_TZE204_57hjqelq'},
-            {modelID: 'TS0601', manufacturerName: '_TZE204_m1wl5fvq '},
+            {modelID: 'TS0601', manufacturerName: '_TZE204_m1wl5fvq'},
             // Roller blinds:
             {modelID: 'TS0601', manufacturerName: '_TZE200_fctwhugx'},
             {modelID: 'TS0601', manufacturerName: '_TZE200_hsgrhjpf'},
@@ -3943,6 +3946,7 @@ const definitions: DefinitionWithExtend[] = [
             // Tubular motors:
             {modelID: 'TS0601', manufacturerName: '_TZE200_5sbebbzs'},
             {modelID: 'TS0601', manufacturerName: '_TZE200_udank5zs'},
+            {modelID: 'TS0601', manufacturerName: '_TZE204_dpqsvdbi'},
             {modelID: 'TS0601', manufacturerName: '_TZE200_zuz7f94z'},
             {modelID: 'TS0601', manufacturerName: '_TZE200_nv6nxo0c'},
             {modelID: 'TS0601', manufacturerName: '_TZE200_3ylew7b4'},
@@ -5574,6 +5578,69 @@ const definitions: DefinitionWithExtend[] = [
             tuya.exposes.currentWithPhase('c'),
             e.temperature(),
             e.binary('leakage_test', ea.STATE_SET, 'ON', 'OFF').withDescription('Turn ON to perform a leagage test'),
+            e
+                .binary('over_current_breaker', ea.STATE_SET, 'ON', 'OFF')
+                .withDescription('OFF - alarm only, ON - relay will turn off when threshold reached'),
+            e
+                .numeric('over_current_threshold', ea.STATE_SET)
+                .withUnit('A')
+                .withDescription('Setup the value on the device')
+                .withValueMin(1)
+                .withValueMax(63),
+            e
+                .binary('over_voltage_breaker', ea.STATE_SET, 'ON', 'OFF')
+                .withDescription('OFF - alarm only, ON - relay will turn off when threshold reached'),
+            e
+                .numeric('over_voltage_threshold', ea.STATE_SET)
+                .withUnit('V')
+                .withDescription('Setup value on the device')
+                .withValueMin(250)
+                .withValueMax(300),
+            e
+                .binary('under_voltage_breaker', ea.STATE_SET, 'ON', 'OFF')
+                .withDescription('OFF - alarm only, ON - relay will turn off when threshold reached'),
+            e
+                .numeric('under_voltage_threshold', ea.STATE_SET)
+                .withUnit('V')
+                .withDescription('Setup value on the device')
+                .withValueMin(150)
+                .withValueMax(200),
+            e
+                .binary('insufficient_balance_breaker', ea.STATE_SET, 'ON', 'OFF')
+                .withDescription('OFF - alarm only, ON - relay will turn off when threshold reached'),
+            e
+                .numeric('insufficient_balance_threshold', ea.STATE_SET)
+                .withUnit('kWh')
+                .withDescription('Setup value on the device')
+                .withValueMin(1)
+                .withValueMax(65535),
+            e
+                .binary('overload_breaker', ea.STATE_SET, 'ON', 'OFF')
+                .withDescription('OFF - alarm only, ON - relay will turn off when threshold reached'),
+            e
+                .numeric('overload_threshold', ea.STATE_SET)
+                .withUnit('kW')
+                .withDescription('Setup value on the device')
+                .withValueMin(1)
+                .withValueMax(25),
+            e
+                .binary('leakage_breaker', ea.STATE_SET, 'ON', 'OFF')
+                .withDescription('OFF - alarm only, ON - relay will turn off when threshold reached'),
+            e
+                .numeric('leakage_threshold', ea.STATE_SET)
+                .withUnit('mA')
+                .withDescription('Setup value on the device')
+                .withValueMin(10)
+                .withValueMax(90),
+            e
+                .binary('high_temperature_breaker', ea.STATE_SET, 'ON', 'OFF')
+                .withDescription('OFF - alarm only, ON - relay will turn off when threshold reached'),
+            e
+                .numeric('high_temperature_threshold', ea.STATE_SET)
+                .withUnit('°C')
+                .withDescription('Setup value on the device')
+                .withValueMin(40)
+                .withValueMax(100),
         ],
         meta: {
             tuyaDatapoints: [
@@ -5606,6 +5673,22 @@ const definitions: DefinitionWithExtend[] = [
                     }),
                 ],
                 [16, 'state', tuya.valueConverter.onOff],
+                [17, null, tuya.valueConverter.threshold_2],
+                [17, 'overload_breaker', tuya.valueConverter.threshold_2],
+                [17, 'overload_threshold', tuya.valueConverter.threshold_2],
+                [17, 'leakage_threshold', tuya.valueConverter.threshold_2],
+                [17, 'leakage_breaker', tuya.valueConverter.threshold_2],
+                [17, 'high_temperature_threshold', tuya.valueConverter.threshold_2],
+                [17, 'high_temperature_breaker', tuya.valueConverter.threshold_2],
+                [18, null, tuya.valueConverter.threshold_3],
+                [18, 'over_current_threshold', tuya.valueConverter.threshold_3],
+                [18, 'over_current_breaker', tuya.valueConverter.threshold_3],
+                [18, 'over_voltage_threshold', tuya.valueConverter.threshold_3],
+                [18, 'over_voltage_breaker', tuya.valueConverter.threshold_3],
+                [18, 'under_voltage_threshold', tuya.valueConverter.threshold_3],
+                [18, 'under_voltage_breaker', tuya.valueConverter.threshold_3],
+                [18, 'insufficient_balance_threshold', tuya.valueConverter.threshold_3],
+                [18, 'insufficient_balance_breaker', tuya.valueConverter.threshold_3],
                 [21, 'leakage_test', tuya.valueConverter.onOff], // Leakage test
                 [102, 'temperature', tuya.valueConverter.divideBy10],
                 // Ignored for now; we don't know what the values mean
@@ -6235,7 +6318,7 @@ const definitions: DefinitionWithExtend[] = [
         extend: [tuya.modernExtend.tuyaOnOff()],
         fromZigbee: [fz.on_off_skip_duplicate_transaction],
         exposes: [e.switch().withEndpoint('l1'), e.switch().withEndpoint('l2'), e.switch().withEndpoint('l3'), e.switch().withEndpoint('l4')],
-        whiteLabel: [{vendor: 'LEELKI', model: 'WP33-EU'}],
+        whiteLabel: [{vendor: 'LELLKI', model: 'WP33-EU'}],
         meta: {multiEndpoint: true},
         endpoint: (device) => {
             return {l1: 1, l2: 2, l3: 3, l4: 4};

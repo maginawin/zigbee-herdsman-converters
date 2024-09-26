@@ -684,6 +684,16 @@ export function getFromLookupByValue(value: unknown, lookup: {[s: string]: unkno
     return defaultValue;
 }
 
+export function configureSetPowerSourceWhenUnknown(powerSource: 'Battery' | 'Mains (single phase)'): Configure {
+    return async (device: Zh.Device): Promise<void> => {
+        if (!device.powerSource) {
+            logger.debug(`Device has no power source, forcing to '${powerSource}'`, NS);
+            device.powerSource = powerSource;
+            device.save();
+        }
+    };
+}
+
 export function assertEndpoint(obj: unknown): asserts obj is Zh.Endpoint {
     if (obj?.constructor?.name?.toLowerCase() !== 'endpoint') throw new Error('Not an endpoint');
 }
@@ -711,14 +721,6 @@ export function isNumericExpose(expose: Expose): expose is Numeric {
 export function isLightExpose(expose: Expose): expose is Light {
     return expose?.type === 'light';
 }
-
-export const configureSetBatteryPowerSourceWhenUnknown: Configure = async (device) => {
-    if (!device.powerSource) {
-        logger.debug(`Device has no power source, forcing to 'Battery'`, NS);
-        device.powerSource = 'Battery';
-        device.save();
-    }
-};
 
 exports.noOccupancySince = noOccupancySince;
 exports.getOptions = getOptions;
