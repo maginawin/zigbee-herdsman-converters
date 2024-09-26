@@ -368,7 +368,7 @@ const definitions: DefinitionWithExtend[] = [
     },
     {
         zigbeeModel: ['HK-SL-DIM-A'],
-        model: 'SR-ZG9040A/ZG9041A-D',
+        model: 'SR-ZG9041A-D',
         vendor: 'Sunricher',
         description: 'Zigbee micro smart dimmer',
         extend: [light({configureReporting: true}), electricityMeter()],
